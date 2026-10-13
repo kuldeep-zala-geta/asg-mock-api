@@ -1,0 +1,412 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VisionPlus Eye Care API",
+    "version": "1.0.0",
+    "description": "Dummy eye-care API for the agentic demo."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4500"
+    }
+  ],
+  "paths": {
+    "/api/clinics": {
+      "get": {
+        "operationId": "search_clinics",
+        "summary": "search_clinics",
+        "description": "Find VisionPlus eye-care clinics. Use for \"where are you located\", \"nearest branch\", \"which centre does LASIK\". Returns clinicId, address, phone, timings and services.",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "required": false,
+            "description": "City or area name, e.g. \"Pune\". Leave empty to list all clinics.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Free-text search over name, address and services, e.g. \"lasik\".",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/doctors": {
+      "get": {
+        "operationId": "list_doctors",
+        "summary": "list_doctors",
+        "description": "List eye doctors with doctorId, specialty, languages, experience and consultation fee. Use to resolve a doctor name into a doctorId before booking.",
+        "parameters": [
+          {
+            "name": "clinicId",
+            "in": "query",
+            "required": false,
+            "description": "Clinic id such as CL-PUN-01.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "required": false,
+            "description": "City or area, e.g. \"Mumbai\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "specialty",
+            "in": "query",
+            "required": false,
+            "description": "One of: cataract, lasik, smile, icl, refractive, retina, glaucoma, dry-eye, paediatric, squint, general.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Doctor name search.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/availability": {
+      "get": {
+        "operationId": "check_availability",
+        "summary": "check_availability",
+        "description": "Check which appointment slots are free on a date. ALWAYS call before book_appointment and only offer slots it returns in availableSlots.",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "description": "Date in YYYY-MM-DD. Required.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "doctorId",
+            "in": "query",
+            "required": false,
+            "description": "Doctor id such as DR-301.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clinicId",
+            "in": "query",
+            "required": false,
+            "description": "Clinic id such as CL-MUM-01.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "specialty",
+            "in": "query",
+            "required": false,
+            "description": "Specialty filter.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/fees": {
+      "get": {
+        "operationId": "get_fees",
+        "summary": "get_fees",
+        "description": "Indicative prices in INR for consultations and procedures. Always quote the range and the disclaimer.",
+        "parameters": [
+          {
+            "name": "service",
+            "in": "query",
+            "required": false,
+            "description": "One of: consultation, lasik, contoura, smile, icl, cataract, cataract-premium, retina-injection, glaucoma-workup, lasik-evaluation.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/procedures": {
+      "get": {
+        "operationId": "procedure_info",
+        "summary": "procedure_info",
+        "description": "Clinical detail about a surgery: candidacy, duration, anaesthesia, downtime, risks, pre-op prep and which clinics offer it.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "One of: lasik, cataract, refractive, smile, icl.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/faqs": {
+      "get": {
+        "operationId": "eyecare_faq",
+        "summary": "eyecare_faq",
+        "description": "Search the eye-care FAQ knowledge base. Use for general eye-care questions before answering from your own knowledge.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "The patient's question or keywords.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/insurance": {
+      "get": {
+        "operationId": "insurance_coverage",
+        "summary": "insurance_coverage",
+        "description": "Check insurance / cashless coverage: empanelled insurers, what is covered, waiting periods, TPA.",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "description": "Insurer name, e.g. \"Star Health\".",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "procedure",
+            "in": "query",
+            "required": false,
+            "description": "cataract, lasik or icl.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/appointments": {
+      "get": {
+        "operationId": "lookup_appointment",
+        "summary": "lookup_appointment",
+        "description": "Look up existing appointments by bookingId or by the phone they were booked with.",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "query",
+            "required": false,
+            "description": "Booking id such as APT-0001-Q4VT.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "required": false,
+            "description": "Phone number used at booking.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "operationId": "book_appointment",
+        "description": "Create a real appointment. Only call after check_availability confirmed the slot is free. The response decides the outcome: \"booked\": true means confirmed (use the returned bookingId); \"booked\": false means it FAILED - explain the error and offer the returned availableSlots. Never claim success without booked:true.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "patientName",
+                  "phone",
+                  "doctorId",
+                  "date",
+                  "slot"
+                ],
+                "properties": {
+                  "patientName": {
+                    "type": "string",
+                    "description": "Full name of the patient."
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Contact number, e.g. +919812345678."
+                  },
+                  "doctorId": {
+                    "type": "string",
+                    "description": "Doctor id such as DR-101."
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "Appointment date in YYYY-MM-DD."
+                  },
+                  "slot": {
+                    "type": "string",
+                    "description": "Exact slot string from availableSlots, e.g. \"10:30\"."
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Short reason for the visit."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Booked"
+          },
+          "409": {
+            "description": "Slot taken"
+          }
+        }
+      }
+    },
+    "/api/handoff": {
+      "post": {
+        "operationId": "human_handoff",
+        "description": "Raise a callback ticket for a human care coordinator. Use for emergencies, complaints, price negotiation, or whenever the patient asks for a person. Returns a ticketId and callback ETA - give those to the patient.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "phone",
+                  "summary"
+                ],
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "description": "Contact number to call back on."
+                  },
+                  "summary": {
+                    "type": "string",
+                    "description": "One line describing what the patient needs."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Patient's name if known."
+                  },
+                  "urgency": {
+                    "type": "string",
+                    "description": "low, normal, high or emergency."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ticket raised"
+          }
+        }
+      }
+    },
+    "/api/appointments/cancel": {
+      "post": {
+        "operationId": "cancel_appointment",
+        "summary": "cancel_appointment",
+        "description": "Cancel a confirmed appointment. Requires the bookingId - look it up with lookup_appointment first if the patient does not have it. Only tell the patient it is cancelled when the response has \"cancelled\": true.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bookingId"
+                ],
+                "properties": {
+                  "bookingId": {
+                    "type": "string",
+                    "description": "Booking id to cancel, e.g. APT-0001-Q4VT."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cancelled"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "bookingId": "APT-0001-RMEH",
+    "status": "CONFIRMED",
+    "patientName": "Rohit Mehra",
+    "phone": "9811122233",
+    "doctorId": "ASG-DR-101",
+    "doctorName": "Dr. Meenakshi Sharma",
+    "clinicId": "ASG-JAI-01",
+    "clinicName": "ASG Eye Hospital - Vaishali Nagar",
+    "clinicAddress": "Plot 12, Amrapali Circle, Vaishali Nagar, Jaipur 302021",
+    "date": "2026-10-08",
+    "slot": "16:00",
+    "reason": "Cataract consultation",
+    "dob": "1971-04-12",
+    "gender": "Male",
+    "consultationFee": 600,
+    "createdAt": "2026-10-04T09:12:00.000Z"
+  },
+  {
+    "bookingId": "APT-0002-SKUL",
+    "status": "CONFIRMED",
+    "patientName": "Sneha Kulkarni",
+    "phone": "9892233445",
+    "doctorId": "ASG-DR-201",
+    "doctorName": "Dr. Farhan Qureshi",
+    "clinicId": "ASG-MUM-01",
+    "clinicName": "ASG Eye Hospital - Andheri West",
+    "clinicAddress": "Off New Link Road, Andheri West, Mumbai 400053",
+    "date": "2026-10-09",
+    "slot": "11:00",
+    "reason": "Retina screening",
+    "dob": "1986-09-02",
+    "gender": "Female",
+    "consultationFee": 900,
+    "createdAt": "2026-10-05T14:40:00.000Z"
+  }
+]

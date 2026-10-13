@@ -1,0 +1,13 @@
+{
+  "name": "asg-mock-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ASG Eye Hospital mock API for the Geta Agentic AI demo agent. Fictional data only.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node api/server.js"
+  }
+}

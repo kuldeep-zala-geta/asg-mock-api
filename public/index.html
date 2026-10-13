@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{BRAND}} - Console</title>
+<style>
+  :root{
+    --bg:#f4f7f9; --card:#fff; --ink:#12303d; --muted:#5d7c8a; --line:#dce7ec;
+    --brand:#0d7f8f; --brand-dark:#0a6b78; --ok:#0f7b46; --ok-bg:#e6f5ed;
+    --err:#b3261e; --err-bg:#fdecea; --warn:#8a5a00; --warn-bg:#fdf3e0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--brand)}
+  header{background:linear-gradient(135deg,#0d7f8f,#12a3ab);color:#fff;padding:18px 20px}
+  .wrap{max-width:1060px;margin:0 auto}
+  header .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{width:38px;height:38px;flex:none}
+  h1{font-size:19px;margin:0;font-weight:650;letter-spacing:.2px}
+  .sub{font-size:12.5px;opacity:.85;margin-top:2px}
+  .status{margin-left:auto;font-size:12.5px;background:rgba(255,255,255,.18);
+    padding:6px 12px;border-radius:20px;white-space:nowrap}
+  nav{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+  nav .wrap{display:flex;gap:2px;overflow-x:auto}
+  nav button{background:none;border:0;border-bottom:2px solid transparent;padding:13px 15px;
+    font:inherit;font-size:14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+  nav button:hover{color:var(--ink)}
+  nav button.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
+  main{padding:22px 20px 60px}
+  section{display:none} section.on{display:block}
+  h2{font-size:16px;margin:0 0 4px}
+  .lede{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  input,select,textarea{font:inherit;padding:9px 11px;border:1px solid var(--line);
+    border-radius:8px;background:#fff;color:var(--ink);min-width:0}
+  input:focus,select:focus,textarea:focus{outline:2px solid #bfe3e8;border-color:var(--brand)}
+  button.btn{font:inherit;font-weight:550;padding:9px 16px;border-radius:8px;border:1px solid var(--brand);
+    background:var(--brand);color:#fff;cursor:pointer}
+  button.btn:hover{background:#0a6b78}
+  button.btn.ghost{background:#fff;color:var(--brand)}
+  button.btn.ghost:hover{background:#eef7f8}
+  button.btn.danger{background:#fff;color:var(--err);border-color:#f0c4c0}
+  button.btn.danger:hover{background:var(--err-bg)}
+  button.btn:disabled{opacity:.5;cursor:not-allowed}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:15px}
+  .card h3{margin:0 0 3px;font-size:15px}
+  .card .meta{color:var(--muted);font-size:13px;margin:2px 0}
+  .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+  .tag{font-size:11.5px;background:#eef4f6;color:var(--muted);padding:3px 8px;border-radius:11px}
+  .tag.b{background:#e3f2f4;color:var(--brand)}
+  .pill{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:11px}
+  .pill.ok{background:var(--ok-bg);color:var(--ok)}
+  .pill.err{background:var(--err-bg);color:var(--err)}
+  .pill.warn{background:var(--warn-bg);color:var(--warn)}
+  .form{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:18px;max-width:640px}
+  .row{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center;margin-bottom:12px}
+  .row label{color:var(--muted);font-size:13.5px}
+  .slots{display:flex;flex-wrap:wrap;gap:7px}
+  .slot{font:inherit;font-size:13.5px;padding:7px 13px;border-radius:8px;border:1px solid var(--line);
+    background:#fff;cursor:pointer}
+  .slot:hover{border-color:var(--brand)}
+  .slot.on{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+  .out{margin-top:14px;border-radius:9px;padding:13px 15px;font-size:14px;display:none}
+  .out.show{display:block}
+  .out.ok{background:var(--ok-bg);border:1px solid #b9e2cc;color:#0b5c34}
+  .out.err{background:var(--err-bg);border:1px solid #f3c6c2;color:#8c1d18}
+  .out pre{margin:9px 0 0;font-size:12px;background:rgba(0,0,0,.045);padding:9px;
+    border-radius:6px;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+  table{width:100%;border-collapse:collapse;background:var(--card);
+    border:1px solid var(--line);border-radius:11px;overflow:hidden;font-size:13.5px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#eef4f6;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  tr:last-child td{border-bottom:0}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
+    background:#eef4f6;padding:1.5px 5px;border-radius:4px}
+  .empty{color:var(--muted);background:var(--card);border:1px dashed var(--line);
+    border-radius:11px;padding:26px;text-align:center;font-size:14px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:14px}
+  @media(max-width:560px){.row{grid-template-columns:1fr;gap:5px}.status{margin-left:0}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <svg class="logo" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <ellipse cx="24" cy="24" rx="21" ry="13" stroke="#fff" stroke-width="2.6"/>
+    <circle cx="24" cy="24" r="7.5" fill="#fff" opacity=".9"/>
+    <circle cx="24" cy="24" r="3.4" fill="#0d7f8f"/>
+  </svg>
+  <div>
+    <h1>{{BRAND}}</h1>
+    <div class="sub">Demo console for the dummy API behind the n8n agent</div>
+  </div>
+  <div class="status" id="status">checking API…</div>
+</div></header>
+
+<nav><div class="wrap" id="tabs">
+  <button class="on" data-t="clinics">Clinics</button>
+  <button data-t="doctors">Doctors</button>
+  <button data-t="book">Book appointment</button>
+  <button data-t="appts">Appointments</button>
+  <button data-t="handoffs">Handoff tickets</button>
+  <button data-t="api">API reference</button>
+</div></nav>
+
+<main class="wrap">
+
+  <section id="clinics" class="on">
+    <h2>Clinics</h2>
+    <p class="lede">Same data the agent's <code>Search_Clinics</code> tool reads.</p>
+    <div class="bar">
+      <input id="cCity" placeholder="City or area (e.g. Pune)">
+      <input id="cQ" placeholder="Service search (e.g. lasik)">
+      <button class="btn" id="cGo">Search</button>
+      <button class="btn ghost" id="cAll">Show all</button>
+    </div>
+    <div class="grid" id="cOut"></div>
+  </section>
+
+  <section id="doctors">
+    <h2>Doctors</h2>
+    <p class="lede">Feeds <code>List_Doctors</code>. Use “Book” to carry a doctor into the booking form.</p>
+    <div class="bar">
+      <input id="dCity" placeholder="City">
+      <select id="dSpec">
+        <option value="">Any specialty</option>
+        <option>cataract</option><option>lasik</option><option>smile</option><option>icl</option>
+        <option>refractive</option><option>retina</option><option>glaucoma</option>
+        <option>dry-eye</option><option>paediatric</option><option>squint</option><option>general</option>
+      </select>
+      <button class="btn" id="dGo">Search</button>
+      <button class="btn ghost" id="dAll">Show all</button>
+    </div>
+    <div class="grid" id="dOut"></div>
+  </section>
+
+  <section id="book">
+    <h2>Book an appointment</h2>
+    <p class="lede">Hits the same <code>POST /api/appointments</code> the agent uses — a taken slot really is rejected.</p>
+    <div class="form">
+      <div class="row"><label for="bDoc">Doctor</label>
+        <select id="bDoc"><option value="">Loading…</option></select></div>
+      <div class="row"><label for="bDate">Date</label>
+        <input type="date" id="bDate"></div>
+      <div class="row"><label>Slot</label>
+        <div><div class="slots" id="bSlots"><span class="tag">pick a doctor and date</span></div></div></div>
+      <div class="row"><label for="bName">Patient name</label>
+        <input id="bName" placeholder="Rahul Sharma"></div>
+      <div class="row"><label for="bPhone">Phone</label>
+        <input id="bPhone" placeholder="+919812345678"></div>
+      <div class="row"><label for="bReason">Reason</label>
+        <input id="bReason" placeholder="Blurred vision"></div>
+      <button class="btn" id="bGo" disabled>Confirm booking</button>
+      <div class="out" id="bOut"></div>
+    </div>
+  </section>
+
+  <section id="appts">
+    <h2>Appointments</h2>
+    <p class="lede">Everything booked here or by the agent, newest last.</p>
+    <div class="bar">
+      <input id="aPhone" placeholder="Filter by phone (optional)">
+      <button class="btn" id="aGo">Refresh</button>
+    </div>
+    <div id="aOut"></div>
+  </section>
+
+  <section id="handoffs">
+    <h2>Handoff tickets</h2>
+    <p class="lede">Raised by the agent's <code>Human_Handoff</code> tool when it escalates.</p>
+    <div class="bar"><button class="btn" id="hGo">Refresh</button></div>
+    <div id="hOut"></div>
+  </section>
+
+  <section id="api">
+    <h2>API reference</h2>
+    <p class="lede">Base URL: <code id="apiBase"></code></p>
+    <div id="apiOut"></div>
+    <p class="note">All clinics, doctors, prices and insurers are fictional demo data.</p>
+  </section>
+
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v == null ? '' : v).replace(/[&<>"]/g, (c) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+async function api(path, opts) {
+  const res = await fetch(path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true', ...(opts || {}).headers }
+  });
+  return { status: res.status, ok: res.ok, body: await res.json() };
+}
+
+/* ---------- header status ---------- */
+async function refreshStatus() {
+  try {
+    const { body } = await api('/health');
+    $('#status').textContent =
+      `API up · ${body.bookings} booking(s) · ${body.handoffs} ticket(s) · today ${body.today}`;
+  } catch {
+    $('#status').textContent = 'API unreachable';
+  }
+}
+
+/* ---------- tabs ---------- */
+$('#tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  document.querySelectorAll('#tabs button').forEach((x) => x.classList.toggle('on', x === b));
+  document.querySelectorAll('main section').forEach((s) => s.classList.toggle('on', s.id === b.dataset.t));
+  if (b.dataset.t === 'appts') loadAppts();
+  if (b.dataset.t === 'handoffs') loadHandoffs();
+  if (b.dataset.t === 'api') loadApiRef();
+});
+
+/* ---------- clinics ---------- */
+async function loadClinics(params = '') {
+  const { body } = await api('/api/clinics' + params);
+  $('#cOut').innerHTML = body.clinics.length ? body.clinics.map((c) => `
+    <div class="card">
+      <h3>${esc(c.name)}</h3>
+      <div class="meta">${esc(c.address)}</div>
+      <div class="meta">${esc(c.phone)} · ${esc(c.timings)}</div>
+      <div class="meta">Parking: ${c.parking ? 'yes' : 'no'} · LASIK suite: ${c.hasLasikSuite ? 'yes' : 'no'}</div>
+      <div class="tags"><span class="tag b">${esc(c.id)}</span>
+        ${c.services.map((s) => `<span class="tag">${esc(s)}</span>`).join('')}</div>
+    </div>`).join('') : '<div class="empty">No clinic matched that search.</div>';
+}
+$('#cGo').onclick = () => loadClinics(`?city=${encodeURIComponent($('#cCity').value)}&q=${encodeURIComponent($('#cQ').value)}`);
+$('#cAll').onclick = () => { $('#cCity').value = ''; $('#cQ').value = ''; loadClinics(); };
+
+/* ---------- doctors ---------- */
+async function loadDoctors(params = '') {
+  const { body } = await api('/api/doctors' + params);
+  $('#dOut').innerHTML = body.doctors.length ? body.doctors.map((d) => `
+    <div class="card">
+      <h3>${esc(d.name)}</h3>
+      <div class="meta">${esc(d.title)}</div>
+      <div class="meta">${esc(d.clinicName)} · ${esc(d.city)}</div>
+      <div class="meta">${d.experienceYears} yrs · consultation ₹${d.consultationFee} · ${esc(d.languages.join(', '))}</div>
+      <div class="tags"><span class="tag b">${esc(d.id)}</span>
+        ${d.specialties.map((s) => `<span class="tag">${esc(s)}</span>`).join('')}</div>
+      <div style="margin-top:11px"><button class="btn ghost" data-book="${esc(d.id)}">Book with this doctor</button></div>
+    </div>`).join('') : '<div class="empty">No doctor matched that search.</div>';
+}
+$('#dGo').onclick = () => loadDoctors(`?city=${encodeURIComponent($('#dCity').value)}&specialty=${encodeURIComponent($('#dSpec').value)}`);
+$('#dAll').onclick = () => { $('#dCity').value = ''; $('#dSpec').value = ''; loadDoctors(); };
+$('#dOut').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-book]'); if (!b) return;
+  document.querySelector('#tabs button[data-t="book"]').click();
+  $('#bDoc').value = b.dataset.book;
+  loadSlots();
+});
+
+/* ---------- booking ---------- */
+let selectedSlot = null;
+
+async function fillDoctorSelect() {
+  const { body } = await api('/api/doctors');
+  $('#bDoc').innerHTML = '<option value="">Select a doctor…</option>' + body.doctors.map((d) =>
+    `<option value="${esc(d.id)}">${esc(d.name)} — ${esc(d.city)} (₹${d.consultationFee})</option>`).join('');
+}
+
+async function loadSlots() {
+  const doctorId = $('#bDoc').value, date = $('#bDate').value;
+  selectedSlot = null; $('#bGo').disabled = true;
+  if (!doctorId || !date) { $('#bSlots').innerHTML = '<span class="tag">pick a doctor and date</span>'; return; }
+  const { body } = await api(`/api/availability?doctorId=${encodeURIComponent(doctorId)}&date=${date}`);
+  if (body.error) { $('#bSlots').innerHTML = `<span class="tag">${esc(body.message)}</span>`; return; }
+  const a = body.availability[0];
+  if (!a.availableSlots.length) {
+    $('#bSlots').innerHTML = `<span class="tag">${esc(a.reason || 'No free slots on this date.')}</span>`;
+    return;
+  }
+  $('#bSlots').innerHTML = a.availableSlots.map((s) => `<button class="slot" data-s="${esc(s)}">${esc(s)}</button>`).join('');
+}
+$('#bDoc').onchange = loadSlots;
+$('#bDate').onchange = loadSlots;
+$('#bSlots').addEventListener('click', (e) => {
+  const b = e.target.closest('.slot'); if (!b) return;
+  selectedSlot = b.dataset.s;
+  document.querySelectorAll('#bSlots .slot').forEach((x) => x.classList.toggle('on', x === b));
+  $('#bGo').disabled = false;
+});
+
+$('#bGo').onclick = async () => {
+  const payload = {
+    patientName: $('#bName').value, phone: $('#bPhone').value, doctorId: $('#bDoc').value,
+    date: $('#bDate').value, slot: selectedSlot, reason: $('#bReason').value
+  };
+  const out = $('#bOut');
+  const { status, body } = await api('/api/appointments', { method: 'POST', body: JSON.stringify(payload) });
+  out.className = 'out show ' + (body.booked ? 'ok' : 'err');
+  if (body.booked) {
+    const a = body.appointment;
+    out.innerHTML = `<strong>Confirmed — ${esc(a.bookingId)}</strong><br>
+      ${esc(a.patientName)} with ${esc(a.doctorName)} on ${esc(a.date)} at ${esc(a.slot)}<br>
+      ${esc(a.clinicName)} · ₹${a.consultationFee}`;
+  } else {
+    out.innerHTML = `<strong>Not booked — HTTP ${status} ${esc(body.error || '')}</strong>
+      <div>${esc(body.message)}</div>
+      ${body.availableSlots && body.availableSlots.length
+        ? `<div style="margin-top:8px">Still free: ${body.availableSlots.map((s) => `<code>${esc(s)}</code>`).join(' ')}</div>` : ''}`;
+  }
+  loadSlots(); refreshStatus();
+};
+
+/* ---------- appointments ---------- */
+async function loadAppts() {
+  const phone = $('#aPhone').value.trim();
+  const { body } = await api('/api/appointments?' + (phone ? `phone=${encodeURIComponent(phone)}` : 'all=true'));
+  const rows = body.appointments || [];
+  $('#aOut').innerHTML = rows.length ? `<table><tr>
+      <th>Booking</th><th>Patient</th><th>Doctor</th><th>When</th><th>Status</th><th></th></tr>` +
+    rows.map((a) => `<tr>
+      <td><code>${esc(a.bookingId)}</code></td>
+      <td>${esc(a.patientName)}<div class="meta">${esc(a.phone)}</div></td>
+      <td>${esc(a.doctorName)}<div class="meta">${esc(a.clinicName)}</div></td>
+      <td>${esc(a.date)}<div class="meta">${esc(a.slot)} · ${esc(a.reason)}</div></td>
+      <td><span class="pill ${a.status === 'CONFIRMED' ? 'ok' : 'err'}">${esc(a.status)}</span></td>
+      <td>${a.status === 'CONFIRMED'
+        ? `<button class="btn danger" data-cancel="${esc(a.bookingId)}">Cancel</button>` : ''}</td>
+    </tr>`).join('') + '</table>'
+    : '<div class="empty">No appointments yet. Book one here, or ask the agent in n8n.</div>';
+}
+$('#aGo').onclick = loadAppts;
+$('#aOut').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-cancel]'); if (!b) return;
+  b.disabled = true;
+  await api('/api/appointments/cancel', { method: 'POST', body: JSON.stringify({ bookingId: b.dataset.cancel }) });
+  loadAppts(); refreshStatus();
+});
+
+/* ---------- handoffs ---------- */
+async function loadHandoffs() {
+  const { body } = await api('/api/handoff');
+  const rows = body.tickets || [];
+  $('#hOut').innerHTML = rows.length ? `<table><tr>
+      <th>Ticket</th><th>Patient</th><th>Summary</th><th>Urgency</th><th>Assigned</th><th>Raised</th></tr>` +
+    rows.map((t) => `<tr>
+      <td><code>${esc(t.ticketId)}</code></td>
+      <td>${esc(t.name)}<div class="meta">${esc(t.phone)}</div></td>
+      <td>${esc(t.summary)}</td>
+      <td><span class="pill ${t.urgency === 'emergency' ? 'err' : t.urgency === 'high' ? 'warn' : 'ok'}">${esc(t.urgency)}</span>
+        <div class="meta">ETA ${t.etaMinutes} min</div></td>
+      <td>${esc(t.assignedTo)}</td>
+      <td>${esc(String(t.createdAt).replace('T', ' ').slice(0, 16))}</td>
+    </tr>`).join('') + '</table>'
+    : '<div class="empty">No handoff tickets yet. Tell the agent “I want to talk to a person”.</div>';
+}
+$('#hGo').onclick = loadHandoffs;
+
+/* ---------- api reference ---------- */
+async function loadApiRef() {
+  $('#apiBase').textContent = location.origin;
+  const { body } = await api('/health');
+  $('#apiOut').innerHTML = '<table><tr><th>Endpoint</th></tr>' +
+    body.endpoints.map((e) => `<tr><td><code>${esc(e)}</code></td></tr>`).join('') + '</table>';
+}
+
+/* ---------- boot ---------- */
+(async function init() {
+  const today = new Date().toISOString().slice(0, 10);
+  $('#bDate').min = today; $('#bDate').value = today;
+  await Promise.all([refreshStatus(), loadClinics(), loadDoctors(), fillDoctorSelect()]);
+  loadSlots();
+  setInterval(refreshStatus, 15000);
+})();
+</script>
+</body>
+</html>
