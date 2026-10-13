@@ -1,13 +1,14 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "VisionPlus Eye Care API",
+    "title": "ASG Eye Hospital API",
     "version": "1.0.0",
     "description": "Dummy eye-care API for the agentic demo."
   },
   "servers": [
     {
-      "url": "http://localhost:4500"
+      "url": "/",
+      "description": "This deployment"
     }
   ],
   "paths": {
@@ -15,7 +16,7 @@
       "get": {
         "operationId": "search_clinics",
         "summary": "search_clinics",
-        "description": "Find VisionPlus eye-care clinics. Use for \"where are you located\", \"nearest branch\", \"which centre does LASIK\". Returns clinicId, address, phone, timings and services.",
+        "description": "Find ASG Eye Hospital centres. Use for \"where are you located\", \"nearest branch\", \"which centre does LASIK\". Returns clinicId, address, phone, timings and services.",
         "parameters": [
           {
             "name": "city",
